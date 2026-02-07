@@ -1,68 +1,53 @@
 package client
 
 import config.TestConfig
-import io.restassured.RestAssured.given
-import io.restassured.http.ContentType
 import io.restassured.response.Response
+import model.AssignLicenseRequest
+import model.ChangeTeamRequest
+import model.LicenseResponse
 
-class AccountClient(
-    private val baseUrl: String,
-    private val apiKey: String,
-    private val customerCode: String
-) {
+class AccountClient(apiKey: String = TestConfig.apiKey, customerCode: String = TestConfig.customerCode) : BaseApiClient(apiKey, customerCode) {
 
-    fun assignLicense(body: Any): Response =
-        given()
-            .baseUri(baseUrl)
-            .header("X-Api-Key", apiKey)
-            .header("X-Customer-Code", customerCode)
-            .contentType(ContentType.JSON)
-            .body(body)
-            .`when`()
-            .post("/customer/licenses/assign")
+     fun assignLicense(requestBody: AssignLicenseRequest): Response =
+         baseRequest()
+             .body(requestBody)
+             .post("/customer/licenses/assign")
+             .then()
+             .extract()
+             .response()
+
+    fun changeLicenseTeam(requestBody: ChangeTeamRequest): Response =
+        baseRequest()
+            .body(requestBody)
+            .post("/customer/licenses/team")
             .then()
             .extract()
             .response()
 
-    fun changeLicenseTeam(body: Any): Response =
-        given()
-            .baseUri(baseUrl)
-            .header("X-Api-Key", apiKey)
-            .header("X-Customer-Code", customerCode)
-            .contentType(ContentType.JSON)
-            .body(body)
-            .`when`()
-            .post("/customer/changeLicensesTeam")
-            .then()
-            .extract()
-            .response()
-
-    fun getCustomerLicenses(
-        productCode: String? = null,
-        assigned: Boolean? = null,
-        assigneeEmail: String? = null,
-        page: Int = 1,
-        perPage: Int = 100
-    ): Response {
-
-        val request = given()
-            .baseUri(TestConfig.baseUrl)
-            .header("X-Api-Key", TestConfig.apiKey)
-            .header("X-Customer-Code", TestConfig.customerCode)
-            .queryParam("page", page)
-            .queryParam("perPage", perPage)
-
-        productCode?.let { request.queryParam("productCode", it) }
-        assigned?.let { request.queryParam("assigned", it) }
-        assigneeEmail?.let { request.queryParam("assigneeEmail", it) }
-
-        return request
-            .`when`()
+    fun getCustomerLicenses(productCode: String? = null): Response =
+        baseRequest()
+            .apply {
+                productCode?.let { queryParam("productCode", it) }
+            }
             .get("/customer/licenses")
             .then()
             .extract()
             .response()
-    }
+
+    fun getCustomerLicensesForTeam(teamId: Int): Response =
+        baseRequest()
+            .get("/customer/teams/$teamId/licenses")
+            .then()
+            .extract()
+            .response()
+
+    fun getCustomerLicense(licenseId: String): LicenseResponse =
+        baseRequest()
+            .get("/customer/licenses/$licenseId")
+            .then()
+            .statusCode(200)
+            .extract()
+            .`as`(LicenseResponse::class.java)
 
 }
 
