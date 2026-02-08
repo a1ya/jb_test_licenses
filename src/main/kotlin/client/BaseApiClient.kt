@@ -1,13 +1,14 @@
-package client
+package org.example.client
 
-import config.TestConfig
+
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.specification.RequestSpecification
 import io.restassured.RestAssured.given
+import org.example.config.TestConfig
 
 abstract class BaseApiClient(
-    private val apiKey: String = TestConfig.apiKey,
-    private val customerCode: String = TestConfig.customerCode
+    apiKey: String = TestConfig.apiKey,
+    customerCode: String = TestConfig.customerCode
 ) {
 
     protected val requestSpec: RequestSpecification =

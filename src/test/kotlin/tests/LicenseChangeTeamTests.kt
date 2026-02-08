@@ -1,9 +1,14 @@
 package tests
 
-import client.AccountClient
-import config.TestConfig
-import data.TestData
-import model.*
+import org.example.client.AccountClient
+import org.example.config.TestConfig
+import org.example.config.TestData
+import org.example.model.ApiErrorCode.INSUFFICIENT_PERMISSIONS
+import org.example.model.ApiErrorCode.TEAM_NOT_FOUND
+import org.example.model.ApiErrorCode.TOKEN_TYPE_MISMATCH
+import org.example.model.ChangeTeamRequest
+import org.example.model.ErrorResponse
+import org.example.model.LicenseResponse
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -11,8 +16,8 @@ import org.junit.jupiter.api.Assertions.*
 class LicenseChangeTeamTests {
 
     private lateinit var client: AccountClient
-    private val sourceTeamId = TestData.teamBId
-    private val targetTeamId = TestData.teamAId
+    private val sourceTeamId = TestData.TEAM_B_ID
+    private val targetTeamId = TestData.TEAM_A_ID
 
     @BeforeAll
     fun setup() {
@@ -55,7 +60,7 @@ class LicenseChangeTeamTests {
     @Test
     fun `check org admin can transfer license from one team to another if one of licenseIds in request is invalid`() {
         val licenseId = findAvailableLicenseInTeam(sourceTeamId)
-        val invalidLicenseId = TestData.invalidLicenseId
+        val invalidLicenseId = TestData.INVALID_LICENSE_ID
 
         val request = ChangeTeamRequest(listOf(licenseId, invalidLicenseId), targetTeamId)
 
@@ -72,7 +77,7 @@ class LicenseChangeTeamTests {
 
     @Test
     fun `check change licenses team should not fail if licenseIds has only invalid license`() {  // todo discuss if 200 is ok
-        val request = ChangeTeamRequest(listOf(TestData.invalidLicenseId), targetTeamId)
+        val request = ChangeTeamRequest(listOf(TestData.INVALID_LICENSE_ID), targetTeamId)
 
         checkChangeLicenseTeamRequestSuccessful(request)
     }
@@ -133,18 +138,21 @@ class LicenseChangeTeamTests {
     fun `check change licenses team fails if targetTeamId is deleted`() {
         val licenseId = findAvailableLicenseInTeam(sourceTeamId)
 
-        val request = ChangeTeamRequest(listOf(licenseId), TestData.teamDeletedId)
+        val request = ChangeTeamRequest(listOf(licenseId), TestData.TEAM_DELETED_ID)
 
         checkChangeLicenseTeamRequestFailsWithError(client, request, 404, TEAM_NOT_FOUND)
     }
 
-    //todo would be nice to also check that license with isTransferableBetweenTeams = false, but no such existing licenses found
 
-    fun findAvailableLicenseInTeam(teamId: Int): String {
+    @Disabled("would be nice to also check that license with isTransferableBetweenTeams = false, but no such existing licenses found")
+    @Test
+    fun `check change team fails for license with isTransferableBetweenTeams = false`() {}
+
+    private fun findAvailableLicenseInTeam(teamId: Int): String {
         return findAvailableLicenseIdsInTeam(teamId).first()
     }
 
-    fun findAvailableLicenseIdsInTeam(teamId: Int, count: Int = 1): List<String> {
+    private fun findAvailableLicenseIdsInTeam(teamId: Int, count: Int = 1): List<String> {
         val licenses = client.getCustomerLicensesForTeam(teamId)
             .`as`(Array<LicenseResponse>::class.java)
             .filter { it.isTransferableBetweenTeams }
@@ -160,20 +168,20 @@ class LicenseChangeTeamTests {
             .map { it.licenseId }
     }
 
-    fun checkLicenseTeam(licenseId: String, expectedTeamId: Int) {
+    private fun checkLicenseTeam(licenseId: String, expectedTeamId: Int) {
         val license = client.getCustomerLicense(licenseId)
         assertEquals(license.team.id, expectedTeamId,
             "TeamId for licenseId=$licenseId expected to be $expectedTeamId, but was ${license.team.id}")
     }
 
-    fun checkChangeLicenseTeamRequestSuccessful(request: ChangeTeamRequest) {
+    private fun checkChangeLicenseTeamRequestSuccessful(request: ChangeTeamRequest) {
         val response = client.changeLicenseTeam(request)
         assertEquals(200, response.statusCode,
             "Change licenses team request=$request expected to be successful")
     }
 
-    fun checkChangeLicenseTeamRequestFailsWithError(changeTeamClient: AccountClient, request: ChangeTeamRequest,
-                                              expectedStatusCode: Int, expectedErrorCode: String) {
+    private fun checkChangeLicenseTeamRequestFailsWithError(changeTeamClient: AccountClient, request: ChangeTeamRequest,
+                                                    expectedStatusCode: Int, expectedErrorCode: String) {
 
         val response = changeTeamClient.changeLicenseTeam(request)
         assertEquals(expectedStatusCode, response.statusCode,

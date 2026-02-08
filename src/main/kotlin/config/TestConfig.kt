@@ -1,4 +1,6 @@
-package config
+package org.example.config
+
+import org.example.model.AssignContactRequest
 
 object TestConfig {
 
@@ -21,4 +23,25 @@ object TestConfig {
         ?: error("JB_CUSTOMER_CODE not set")
 
     const val baseUrl = "https://account.jetbrains.com/api/v1"
+
+}
+
+object TestData {
+
+    val testAssignContact = AssignContactRequest(
+        email = "alevtina.gatilova@gmail.com",
+        firstName = "test",
+        lastName = "test"
+    )
+
+    val testDisposableEmailAssigneeContact = AssignContactRequest(
+        email = "carvelc51@sunsabla.com",
+        firstName = "test",
+        lastName = "test"
+    )
+
+    const val INVALID_LICENSE_ID = "INVALID_LICENSE_ID"
+    const val TEAM_A_ID = 2795957
+    const val TEAM_B_ID = 2794989
+    const val TEAM_DELETED_ID = 2796685
 }

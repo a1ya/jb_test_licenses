@@ -10,10 +10,9 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-    testImplementation("io.rest-assured:rest-assured:6.0.0")
-    testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
+    implementation("io.rest-assured:rest-assured:6.0.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.0")
 }
 
 tasks.test {

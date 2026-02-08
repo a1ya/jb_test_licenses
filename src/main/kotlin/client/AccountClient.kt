@@ -1,10 +1,11 @@
-package client
+package org.example.client
 
-import config.TestConfig
+
 import io.restassured.response.Response
-import model.AssignLicenseRequest
-import model.ChangeTeamRequest
-import model.LicenseResponse
+import org.example.config.TestConfig
+import org.example.model.AssignLicenseRequest
+import org.example.model.ChangeTeamRequest
+import org.example.model.LicenseResponse
 
 class AccountClient(apiKey: String = TestConfig.apiKey, customerCode: String = TestConfig.customerCode) : BaseApiClient(apiKey, customerCode) {
 
@@ -24,11 +25,8 @@ class AccountClient(apiKey: String = TestConfig.apiKey, customerCode: String = T
             .extract()
             .response()
 
-    fun getCustomerLicenses(productCode: String? = null): Response =
+    fun getCustomerLicenses(): Response =
         baseRequest()
-            .apply {
-                productCode?.let { queryParam("productCode", it) }
-            }
             .get("/customer/licenses")
             .then()
             .extract()

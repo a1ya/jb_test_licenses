@@ -1,9 +1,18 @@
 package tests
 
-import client.AccountClient
-import config.TestConfig
-import data.TestData
-import model.*
+import org.example.client.AccountClient
+import org.example.config.*
+import org.example.model.ApiErrorCode.INSUFFICIENT_PERMISSIONS
+import org.example.model.ApiErrorCode.INVALID_CONTACT_EMAIL
+import org.example.model.ApiErrorCode.LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN
+import org.example.model.ApiErrorCode.LICENSE_NOT_FOUND
+import org.example.model.ApiErrorCode.PRODUCT_NOT_FOUND
+import org.example.model.ApiErrorCode.TEAM_MISMATCH
+import org.example.model.ApiErrorCode.TEAM_NOT_FOUND
+import org.example.model.AssignFromTeamRequest
+import org.example.model.AssignLicenseRequest
+import org.example.model.ErrorResponse
+import org.example.model.LicenseResponse
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -21,8 +30,10 @@ class LicenseAssignTests {
     fun `check org admin can assign available license by license with product`() {
         val availableLicense = findAvailableLicense()
 
-        val request = AssignLicenseRequest(license =
-            AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id))
+        val request = AssignLicenseRequest(
+            license =
+                AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id)
+        )
 
         checkLicenseIsAssignedSuccessfully(orgAdminClient, request, availableLicense.licenseId)
     }
@@ -39,7 +50,7 @@ class LicenseAssignTests {
     @Test
     fun `check team admin can assign available license`() {
         val teamAdminClient = AccountClient(apiKey = TestConfig.apiKeyTeamBAdmin)
-        val availableLicense = findAvailableLicenseInTeam(TestData.teamBId)
+        val availableLicense = findAvailableLicenseInTeam(TestData.TEAM_B_ID)
 
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
@@ -49,7 +60,7 @@ class LicenseAssignTests {
     @Test
     fun `check license can not be assigned by team admin from another team`() {
         val teamBAdminClient = AccountClient(apiKey = TestConfig.apiKeyTeamBAdmin)
-        val availableLicense = findAvailableLicenseInTeam(TestData.teamAId)
+        val availableLicense = findAvailableLicenseInTeam(TestData.TEAM_A_ID)
 
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
@@ -72,7 +83,7 @@ class LicenseAssignTests {
     fun `check license can not be assigned by team viewer`() {
         val teamViewerClient = AccountClient(apiKey = TestConfig.apiKeyTeamBViewer)
 
-        val availableLicense = findAvailableLicenseInTeam(TestData.teamBId)
+        val availableLicense = findAvailableLicenseInTeam(TestData.TEAM_B_ID)
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
         checkAssignLicenseRequestFailsWithError(teamViewerClient, request, 403, INSUFFICIENT_PERMISSIONS)
@@ -93,7 +104,10 @@ class LicenseAssignTests {
     fun `check license can not be assigned for disposable email`() {
         val availableLicense = findAvailableLicense()
 
-        val request = AssignLicenseRequest(contact = TestData.testDisposableEmailAssigneeContact, licenseId = availableLicense.licenseId)
+        val request = AssignLicenseRequest(
+            contact = TestData.testDisposableEmailAssigneeContact,
+            licenseId = availableLicense.licenseId
+        )
 
         checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 400, INVALID_CONTACT_EMAIL)
         checkLicenseNotAssigned(availableLicense.licenseId)
@@ -101,7 +115,7 @@ class LicenseAssignTests {
 
     @Test
     fun `check license can not be assigned for invalid license`() {
-        val invalidLicenseId = TestData.invalidLicenseId
+        val invalidLicenseId = TestData.INVALID_LICENSE_ID
 
         val request = AssignLicenseRequest(licenseId = invalidLicenseId)
 
@@ -113,8 +127,10 @@ class LicenseAssignTests {
         val availableLicense = findAvailableLicense()
         val invalidTeamId = 0
 
-        val request = AssignLicenseRequest(license =
-            AssignFromTeamRequest(availableLicense.product.code, invalidTeamId))
+        val request = AssignLicenseRequest(
+            license =
+                AssignFromTeamRequest(availableLicense.product.code, invalidTeamId)
+        )
 
         checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 404, TEAM_NOT_FOUND)
         checkLicenseNotAssigned(availableLicense.licenseId)
@@ -125,25 +141,26 @@ class LicenseAssignTests {
         val availableLicense = findAvailableLicense()
         val invalidProductCode = "FAKE"
 
-        val request = AssignLicenseRequest(license = AssignFromTeamRequest(invalidProductCode, availableLicense.team.id))
+        val request =
+            AssignLicenseRequest(license = AssignFromTeamRequest(invalidProductCode, availableLicense.team.id))
 
         checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 404, PRODUCT_NOT_FOUND)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
-    fun findAvailableLicense(): LicenseResponse {
+    private fun findAvailableLicense(): LicenseResponse {
         val licenses = orgAdminClient.getCustomerLicenses().`as`(Array<LicenseResponse>::class.java)
         return licenses.firstOrNull { it.isAvailableToAssign }
             ?: error("No available licenses found")
     }
 
-    fun findAvailableLicenseInTeam(teamId: Int): LicenseResponse {
+    private fun findAvailableLicenseInTeam(teamId: Int): LicenseResponse {
         val licenses = orgAdminClient.getCustomerLicensesForTeam(teamId).`as`(Array<LicenseResponse>::class.java)
         return licenses.firstOrNull { it.isAvailableToAssign }
             ?: error("No available licenses found for team with teamId=$teamId")
     }
 
-    fun checkLicenseIsAssignedSuccessfully(assignClient: AccountClient, request: AssignLicenseRequest, licenseId: String) {
+    private fun checkLicenseIsAssignedSuccessfully(assignClient: AccountClient, request: AssignLicenseRequest, licenseId: String) {
         val response = assignClient.assignLicense(request)
         assertEquals(200, response.statusCode)
 
@@ -158,8 +175,8 @@ class LicenseAssignTests {
         assertFalse(license.isAvailableToAssign, "isAvailableToAssign expected to be false after assigning license")
     }
 
-    fun checkAssignLicenseRequestFailsWithError(client: AccountClient, request: AssignLicenseRequest,
-                                                    expectedStatusCode: Int, expectedErrorCode: String) {
+    private fun checkAssignLicenseRequestFailsWithError(client: AccountClient, request: AssignLicenseRequest,
+                                                expectedStatusCode: Int, expectedErrorCode: String) {
 
         val response = client.assignLicense(request)
         assertEquals(expectedStatusCode, response.statusCode,
@@ -170,7 +187,7 @@ class LicenseAssignTests {
             "Assign license request=$request expected to fail with error code $expectedErrorCode, but was ${error.code}")
     }
 
-    fun checkLicenseNotAssigned(licenseId: String) {
+    private fun checkLicenseNotAssigned(licenseId: String) {
         val license = orgAdminClient.getCustomerLicense(licenseId)
         assertNull(license.assignee, "Assignee expected to be null for not assigned license")
         assertTrue(license.isAvailableToAssign, "isAvailableToAssign expected to be true for not assigned license")

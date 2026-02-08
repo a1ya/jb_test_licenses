@@ -1,7 +1,7 @@
-package model
+package org.example.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import data.TestData
+import org.example.config.TestData
 
 data class AssignContactRequest(
     val email: String,
@@ -38,7 +38,6 @@ data class LicenseResponse(
     val licenseId: String,
     val isAvailableToAssign: Boolean,
     val isTransferableBetweenTeams: Boolean,
-    val isTrial: Boolean,
     val product: ProductResponse,
     val team: TeamResponse,
     )
