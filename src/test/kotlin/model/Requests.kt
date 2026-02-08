@@ -3,7 +3,7 @@ package model
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import data.TestData
 
-data class AssigneeContactRequest(
+data class AssignContactRequest(
     val email: String,
     val firstName: String,
     val lastName: String
@@ -15,7 +15,7 @@ data class AssignFromTeamRequest(
 )
 
 data class AssignLicenseRequest(
-    val contact: AssigneeContactRequest = TestData.testAssigneeContact,
+    val contact: AssignContactRequest = TestData.testAssignContact,
     val includeOfflineActivationCode: Boolean = true,
     val license: AssignFromTeamRequest? = null,
     val licenseId: String? = null,
@@ -37,24 +37,15 @@ data class LicenseResponse(
     val assignee: AssigneeLicenseResponse?,
     val licenseId: String,
     val isAvailableToAssign: Boolean,
-    val isSuspended: Boolean,
     val isTransferableBetweenTeams: Boolean,
     val isTrial: Boolean,
     val product: ProductResponse,
-    val subscription: SubscriptionResponse?,
     val team: TeamResponse,
     )
 
 data class ProductResponse(
     val code: String,
     val name: String
-)
-
-data class SubscriptionResponse(
-    val isAutomaticallyRenewed: Boolean,
-    val isOutdated: Boolean,
-    val subscriptionPackRef: String?,
-    val validUntilDate: String?,
 )
 
 data class TeamResponse(

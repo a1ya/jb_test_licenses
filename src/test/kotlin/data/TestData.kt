@@ -1,21 +1,21 @@
 package data
 
-import model.AssigneeContactRequest
+import model.AssignContactRequest
 
 object TestData {
 
     // Test user
-    val testAssigneeContact = AssigneeContactRequest(
+    val testAssignContact = AssignContactRequest(
         email = "alevtina.gatilova@gmail.com",
         firstName = "test",
         lastName = "test"
     )
 
     // Test user
-    val testDisposableEmailAssigneeContact = AssigneeContactRequest(
+    val testDisposableEmailAssigneeContact = AssignContactRequest(
         email = "carvelc51@sunsabla.com",
-        firstName = "Alya TeamBviewer",
-        lastName = "Test"
+        firstName = "test",
+        lastName = "test"
     )
 
     // reusable data:
