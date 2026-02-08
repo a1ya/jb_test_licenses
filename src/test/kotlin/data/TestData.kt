@@ -7,23 +7,20 @@ object TestData {
     // Test user
     val testAssigneeContact = AssigneeContactRequest(
         email = "alevtina.gatilova@gmail.com",
-        firstName = "Alevtina",
-        lastName = "Shalygina"
+        firstName = "test",
+        lastName = "test"
     )
 
     // Test user
-    val testDisposableEmailContact = AssigneeContactRequest(
+    val testDisposableEmailAssigneeContact = AssigneeContactRequest(
         email = "carvelc51@sunsabla.com",
         firstName = "Alya TeamBviewer",
         lastName = "Test"
     )
 
-
     // reusable data:
-    const val testLicenseId = "07WB7RP9UB"
-    const val recentlyAssignedLicenseId = "RECENT1234"
-    const val invalidLicenseId = "INVALID1234"
-    const val testProductCode = "II" // IntelliJ IDEA Ultimate, for example
-    const val testTeamAId = 2795957
-    const val testTeamBId = 2794989
+    const val invalidLicenseId = "INVALID_LICENSE_ID"
+    const val teamAId = 2795957
+    const val teamBId = 2794989
+    const val teamDeletedId = 2796685
 }

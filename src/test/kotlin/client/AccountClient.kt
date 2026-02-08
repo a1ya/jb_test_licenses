@@ -19,7 +19,7 @@ class AccountClient(apiKey: String = TestConfig.apiKey, customerCode: String = T
     fun changeLicenseTeam(requestBody: ChangeTeamRequest): Response =
         baseRequest()
             .body(requestBody)
-            .post("/customer/licenses/team")
+            .post("/customer/changeLicensesTeam")
             .then()
             .extract()
             .response()

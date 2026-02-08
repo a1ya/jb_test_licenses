@@ -14,6 +14,9 @@ object TestConfig {
     val apiKeyTeamBViewer: String = System.getenv("JB_API_KEY_TEAM_B_VIEWER")
         ?: error("JB_API_KEY_TEAM_B_VIEWER not set")
 
+    val apiKeyTeamABAdmin: String = System.getenv("JB_API_KEY_TEAM_AB_ADMIN")
+        ?: error("JB_API_KEY_TEAM_AB_ADMIN not set")
+
     val customerCode: String = System.getenv("JB_CUSTOMER_CODE")
         ?: error("JB_CUSTOMER_CODE not set")
 
