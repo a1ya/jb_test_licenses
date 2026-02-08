@@ -148,10 +148,13 @@ class LicenseAssignTests {
         assertEquals(200, response.statusCode)
 
         val license = orgAdminClient.getCustomerLicense(licenseId)
-        assertNotNull(license.assignee, "Assignee expected to be notNull for licenseId =${license.licenseId}")
-        assertEquals(license.assignee?.email, TestData.testAssigneeContact.email,
-            "Assignee email for licenseId=$licenseId expected to be ${TestData.testAssigneeContact.email}," +
-                    " but was ${license.assignee?.email}")
+        assertNotNull(license.assignee, "Assignee expected to be notNull for licenseId =$licenseId")
+
+        val licenseEmail = license.assignee?.email
+        val expectedEmail = TestData.testAssigneeContact.email // since there is only 1 test user that can be successfully assigned
+        assertEquals(expectedEmail, licenseEmail,
+            "Assignee email for licenseId=$licenseId expected to be $expectedEmail, but was $licenseEmail")
+
         assertFalse(license.isAvailableToAssign, "isAvailableToAssign expected to be false after assigning license")
     }
 
