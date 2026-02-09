@@ -1,10 +1,9 @@
-package org.example.client
-
+package client
 
 import io.restassured.builder.RequestSpecBuilder
 import io.restassured.specification.RequestSpecification
 import io.restassured.RestAssured.given
-import org.example.config.TestConfig
+import config.TestConfig
 
 abstract class BaseApiClient(
     apiKey: String = TestConfig.apiKey,

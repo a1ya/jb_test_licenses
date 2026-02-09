@@ -1,6 +1,6 @@
-package org.example.config
+package config
 
-import org.example.model.AssignContactRequest
+import model.AssignContactRequest
 
 object TestConfig {
 
@@ -41,7 +41,9 @@ object TestData {
     )
 
     const val INVALID_LICENSE_ID = "INVALID_LICENSE_ID"
+    const val INVALID_PRODUCT_CODE = "FAKE"
     const val TEAM_A_ID = 2795957
     const val TEAM_B_ID = 2794989
+    const val TEAM_C_ID = 2796686
     const val TEAM_DELETED_ID = 2796685
 }

@@ -1,18 +1,19 @@
 package tests
 
-import org.example.client.AccountClient
-import org.example.config.*
-import org.example.model.ApiErrorCode.INSUFFICIENT_PERMISSIONS
-import org.example.model.ApiErrorCode.INVALID_CONTACT_EMAIL
-import org.example.model.ApiErrorCode.LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN
-import org.example.model.ApiErrorCode.LICENSE_NOT_FOUND
-import org.example.model.ApiErrorCode.PRODUCT_NOT_FOUND
-import org.example.model.ApiErrorCode.TEAM_MISMATCH
-import org.example.model.ApiErrorCode.TEAM_NOT_FOUND
-import org.example.model.AssignFromTeamRequest
-import org.example.model.AssignLicenseRequest
-import org.example.model.ErrorResponse
-import org.example.model.LicenseResponse
+import config.TestConfig
+import config.TestData
+import client.AccountClient
+import model.ApiErrorCode.INSUFFICIENT_PERMISSIONS
+import model.ApiErrorCode.INVALID_CONTACT_EMAIL
+import model.ApiErrorCode.LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN
+import model.ApiErrorCode.LICENSE_NOT_FOUND
+import model.ApiErrorCode.PRODUCT_NOT_FOUND
+import model.ApiErrorCode.TEAM_MISMATCH
+import model.ApiErrorCode.TEAM_NOT_FOUND
+import model.AssignFromTeamRequest
+import model.AssignLicenseRequest
+import model.ErrorResponse
+import model.LicenseResponse
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -30,10 +31,7 @@ class LicenseAssignTests {
     fun `check org admin can assign available license by license with product`() {
         val availableLicense = findAvailableLicense()
 
-        val request = AssignLicenseRequest(
-            license =
-                AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id)
-        )
+        val request = AssignLicenseRequest(license = AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id))
 
         checkLicenseIsAssignedSuccessfully(orgAdminClient, request, availableLicense.licenseId)
     }
@@ -139,7 +137,7 @@ class LicenseAssignTests {
     @Test
     fun `check license can not be assigned for invalid product code`() {
         val availableLicense = findAvailableLicense()
-        val invalidProductCode = "FAKE"
+        val invalidProductCode = TestData.INVALID_PRODUCT_CODE
 
         val request =
             AssignLicenseRequest(license = AssignFromTeamRequest(invalidProductCode, availableLicense.team.id))

@@ -1,7 +1,7 @@
-package org.example.model
+package model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import org.example.config.TestData
+import config.TestData
 
 data class AssignContactRequest(
     val email: String,

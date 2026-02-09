@@ -1,4 +1,4 @@
-package org.example.model
+package model
 
 object ApiErrorCode {
     const val LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN = "LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN"
