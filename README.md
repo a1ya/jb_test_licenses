@@ -20,12 +20,12 @@ Required Environment Variables (provided separately)
 If they are not set, tests will fail.
 
 How to Run Tests
-- Run all tests ./gradlew clean test
+- Run all tests ./gradlew test
 
 Allure Report
 - Generate report ./gradlew allureReport
 - Generate and open report in browser ./gradlew allureServe
-- Run everything in one command ./gradlew clean test allureReport allureServe
+- Run everything in one command ./gradlew test allureReport allureServe
 
 Test Cleanup
 
