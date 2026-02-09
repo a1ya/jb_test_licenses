@@ -17,15 +17,9 @@ import model.LicenseResponse
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LicenseAssignTests {
 
-    private lateinit var orgAdminClient: AccountClient
-
-    @BeforeAll
-    fun setup() {
-        orgAdminClient = AccountClient()
-    }
+    private val orgAdminClient = AccountClient()
 
     @Test
     fun `check org admin can assign available license by license with product code and team id`() {

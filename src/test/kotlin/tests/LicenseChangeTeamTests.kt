@@ -12,17 +12,11 @@ import model.LicenseResponse
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LicenseChangeTeamTests {
 
-    private lateinit var orgAdminClient: AccountClient
+    private val orgAdminClient = AccountClient()
     private val sourceTeamId = TestData.TEAM_B_ID //team with licenses
     private val targetTeamId = TestData.TEAM_C_ID // team without licenses
-
-    @BeforeAll
-    fun setup() {
-        orgAdminClient = AccountClient()
-    }
 
     @Test
     fun `check org admin can change license team to another`() {
