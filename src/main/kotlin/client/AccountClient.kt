@@ -6,7 +6,7 @@ import model.AssignLicenseRequest
 import model.ChangeTeamRequest
 import model.LicenseResponse
 
-class AccountClient(apiKey: String = TestConfig.apiKey, customerCode: String = TestConfig.customerCode) : BaseApiClient(apiKey, customerCode) {
+class AccountClient(val apiKey: String = TestConfig.apiKey, customerCode: String = TestConfig.customerCode) : BaseApiClient(apiKey, customerCode) {
 
      fun assignLicense(requestBody: AssignLicenseRequest): Response =
          baseRequest()
