@@ -28,10 +28,11 @@ class LicenseAssignTests {
     }
 
     @Test
-    fun `check org admin can assign available license by license with product`() {
+    fun `check org admin can assign available license by license with product code and team id`() {
         val availableLicense = findAvailableLicense()
 
-        val request = AssignLicenseRequest(license = AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id))
+        val request = AssignLicenseRequest(
+            license = AssignFromTeamRequest(availableLicense.product.code, availableLicense.team.id))
 
         checkLicenseIsAssignedSuccessfully(orgAdminClient, request, availableLicense.licenseId)
     }
@@ -62,7 +63,8 @@ class LicenseAssignTests {
 
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
-        checkAssignLicenseRequestFailsWithError(teamBAdminClient, request, 403, TEAM_MISMATCH)
+        checkAssignLicenseRequestFailsWithError(teamBAdminClient, request,
+            403, TEAM_MISMATCH)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
@@ -73,7 +75,8 @@ class LicenseAssignTests {
         val availableLicense = findAvailableLicense()
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
-        checkAssignLicenseRequestFailsWithError(orgViewerClient, request, 403, INSUFFICIENT_PERMISSIONS)
+        checkAssignLicenseRequestFailsWithError(orgViewerClient, request,
+            403, INSUFFICIENT_PERMISSIONS)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
@@ -84,7 +87,8 @@ class LicenseAssignTests {
         val availableLicense = findAvailableLicenseInTeam(TestData.TEAM_B_ID)
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
-        checkAssignLicenseRequestFailsWithError(teamViewerClient, request, 403, INSUFFICIENT_PERMISSIONS)
+        checkAssignLicenseRequestFailsWithError(teamViewerClient, request,
+            403, INSUFFICIENT_PERMISSIONS)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
@@ -95,19 +99,19 @@ class LicenseAssignTests {
         val request = AssignLicenseRequest(licenseId = availableLicense.licenseId)
 
         checkLicenseIsAssignedSuccessfully(orgAdminClient, request, availableLicense.licenseId) // first time
-        checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 400, LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN) // second time
+        checkAssignLicenseRequestFailsWithError(orgAdminClient, request,
+            400, LICENSE_IS_NOT_AVAILABLE_TO_ASSIGN) // second time
     }
 
     @Test
-    fun `check license can not be assigned for disposable email`() {
+    fun `check license can not be assigned for disposable email assignee contact`() {
         val availableLicense = findAvailableLicense()
 
         val request = AssignLicenseRequest(
-            contact = TestData.testDisposableEmailAssigneeContact,
-            licenseId = availableLicense.licenseId
-        )
+            contact = TestData.testDisposableEmailAssigneeContact, licenseId = availableLicense.licenseId)
 
-        checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 400, INVALID_CONTACT_EMAIL)
+        checkAssignLicenseRequestFailsWithError(orgAdminClient, request,
+            400, INVALID_CONTACT_EMAIL)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
@@ -117,7 +121,8 @@ class LicenseAssignTests {
 
         val request = AssignLicenseRequest(licenseId = invalidLicenseId)
 
-        checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 404, LICENSE_NOT_FOUND)
+        checkAssignLicenseRequestFailsWithError(orgAdminClient, request,
+            404, LICENSE_NOT_FOUND)
     }
 
     @Test
@@ -126,11 +131,10 @@ class LicenseAssignTests {
         val invalidTeamId = 0
 
         val request = AssignLicenseRequest(
-            license =
-                AssignFromTeamRequest(availableLicense.product.code, invalidTeamId)
-        )
+            license = AssignFromTeamRequest(availableLicense.product.code, invalidTeamId))
 
-        checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 404, TEAM_NOT_FOUND)
+        checkAssignLicenseRequestFailsWithError(orgAdminClient, request,
+            404, TEAM_NOT_FOUND)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 
@@ -139,10 +143,10 @@ class LicenseAssignTests {
         val availableLicense = findAvailableLicense()
         val invalidProductCode = TestData.INVALID_PRODUCT_CODE
 
-        val request =
-            AssignLicenseRequest(license = AssignFromTeamRequest(invalidProductCode, availableLicense.team.id))
+        val request = AssignLicenseRequest(license = AssignFromTeamRequest(invalidProductCode, availableLicense.team.id))
 
-        checkAssignLicenseRequestFailsWithError(orgAdminClient, request, 404, PRODUCT_NOT_FOUND)
+        checkAssignLicenseRequestFailsWithError(orgAdminClient, request,
+            404, PRODUCT_NOT_FOUND)
         checkLicenseNotAssigned(availableLicense.licenseId)
     }
 

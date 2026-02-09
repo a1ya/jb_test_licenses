@@ -93,7 +93,8 @@ class LicenseChangeTeamTests {
 
         val request = ChangeTeamRequest(listOf(licenseId), targetTeamId)
 
-        checkChangeLicenseTeamRequestFailsWithError(orgViewerClient, request, 403, INSUFFICIENT_PERMISSIONS)
+        checkChangeLicenseTeamRequestFailsWithError(orgViewerClient, request,
+            403, INSUFFICIENT_PERMISSIONS)
         checkLicenseTeam(licenseId, sourceTeamId)
     }
 
@@ -104,7 +105,8 @@ class LicenseChangeTeamTests {
 
         val request = ChangeTeamRequest(listOf(licenseId), targetTeamId)
 
-        checkChangeLicenseTeamRequestFailsWithError(teamViewerClient, request, 403, TOKEN_TYPE_MISMATCH)
+        checkChangeLicenseTeamRequestFailsWithError(teamViewerClient, request,
+            403, TOKEN_TYPE_MISMATCH)
         checkLicenseTeam(licenseId, sourceTeamId)
     }
 
@@ -114,7 +116,8 @@ class LicenseChangeTeamTests {
         val licenseId = findAvailableLicenseInTeam(sourceTeamId)
 
         val request = ChangeTeamRequest(listOf(licenseId), targetTeamId)
-        checkChangeLicenseTeamRequestFailsWithError(twoTeamsAdminClient, request, 403, TOKEN_TYPE_MISMATCH)
+        checkChangeLicenseTeamRequestFailsWithError(twoTeamsAdminClient, request,
+            403, TOKEN_TYPE_MISMATCH)
         checkLicenseTeam(licenseId, sourceTeamId)
     }
 
@@ -124,7 +127,8 @@ class LicenseChangeTeamTests {
         val licenseId = findAvailableLicenseInTeam(sourceTeamId)
 
         val request = ChangeTeamRequest(listOf(licenseId), targetTeamId)
-        checkChangeLicenseTeamRequestFailsWithError(teamViewerClient, request, 403, TOKEN_TYPE_MISMATCH)
+        checkChangeLicenseTeamRequestFailsWithError(teamViewerClient, request,
+            403, TOKEN_TYPE_MISMATCH)
         checkLicenseTeam(licenseId, sourceTeamId)
     }
 
@@ -134,7 +138,8 @@ class LicenseChangeTeamTests {
 
         val request = ChangeTeamRequest(listOf(licenseId), 0)
 
-        checkChangeLicenseTeamRequestFailsWithError(orgAdminClient, request, 404, TEAM_NOT_FOUND)
+        checkChangeLicenseTeamRequestFailsWithError(orgAdminClient, request,
+            404, TEAM_NOT_FOUND)
         checkLicenseTeam(licenseId, sourceTeamId)
     }
 
@@ -144,10 +149,12 @@ class LicenseChangeTeamTests {
 
         val request = ChangeTeamRequest(listOf(licenseId), TestData.TEAM_DELETED_ID)
 
-        checkChangeLicenseTeamRequestFailsWithError(orgAdminClient, request, 404, TEAM_NOT_FOUND)
+        checkChangeLicenseTeamRequestFailsWithError(orgAdminClient, request,
+            404, TEAM_NOT_FOUND)
     }
 
-    @Disabled("would be nice to also check that license with isTransferableBetweenTeams = false, but no such existing licenses found")
+    @Disabled("would be nice to also check that license with isTransferableBetweenTeams = false, " +
+            "but no such existing licenses found")
     @Test
     fun `check change team fails for license with isTransferableBetweenTeams = false`() {}
     //
